@@ -1,64 +1,60 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Lottery System
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a lottery system backend which is developed in Laravel 8 and PostgreSQL.
 
-## About Laravel
+### Prerequisition
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. PHP 7.3
+2. Postgres
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Project setup
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
+composer install --ignore-platform-reqs
+```
 
-## Learning Laravel
+### Database configuration
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Copy '.env.example' as '.env' and change below lines according to database configuration
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Default database should be postgres.
+Default username should be postgres.
 
-## Laravel Sponsors
+```
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=<database_name>
+DB_USERNAME=<database_username>
+DB_PASSWORD=<database_password>
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Create tables
 
-### Premium Partners
+Remarks: It will clear all previous / remaining data.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+```
+php artisan migrate:refresh
+```
 
-## Contributing
+### For mockup data generation
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Please `composer dump-autoload` to reload those files if there is any change.
 
-## Code of Conduct
+Generate Mockup User Data
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
+php artisan mockup:createUser
+```
 
-## Security Vulnerabilities
+### Serve the application for development
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+php -S localhost:8000 -t public
+```
 
-## License
+## Limitations
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. The draw of tickets periodically and continuously at every x minutes depends on the frontend api call. As this system is developed in laravel, it is hard to handle process that are needed to be called repeatedly and periodically. Scheduler in Laravel is needed to implement these repeated functions, which requires to run as a cron job. Due to cron job requires modifying the cron file in the local drive, it might not be a good solution for this system. Therefore, the ticket drawing event depends on the api request from the frontend. Frontend is required to call that api repeatedly with the given interval to start each draw.
+2. After each draw, the backend response with the win ticket details and the draw details. Each contestent frontend need to call apis to get the updated information of their tickets instead of getting whether they win or not directly. Frequently calls of api for getting tickets information may needed. Websocket may be a better solution to this kind of situation.  
+3. Under the situation of not knowing what actually needs to be display on the client side, methods defined in controllers are mostly generalized methods, so as to suit different combination of data that the client side needed. If how data needed to be displayed in client side is knowable, more precise methods could be developed to prevent getting extra data from the database thus reduce the complexity of the data response to the frontend.
