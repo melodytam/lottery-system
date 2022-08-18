@@ -4,7 +4,7 @@ This is a lottery system backend which is developed in Laravel 8 and PostgreSQL.
 
 ### Prerequisition
 
-1. PHP 7.2
+1. PHP 7.3
 2. Postgres
 
 ### Project setup
@@ -34,7 +34,7 @@ DB_PASSWORD=<database_password>
 Remarks: It will clear all previous / remaining data.
 
 ```
-php artisan migrate:refresh --seed
+php artisan migrate:refresh
 ```
 
 ### For mockup data generation
