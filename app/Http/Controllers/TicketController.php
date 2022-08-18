@@ -22,8 +22,8 @@ class TicketController extends Controller {
         $this->request = $request;
     }
 
-    // request body: user_id
-    // return: ticket id and ticket No.
+    // param: user_id
+    // return: json with ticket information
     public function create() {
 
         if (!$this->request->has('user_id')) {
@@ -58,6 +58,7 @@ class TicketController extends Controller {
     }
 
     // retrieve ticket
+    // return: json with ticket information
     public function read($id) {
 
         // validation
@@ -73,6 +74,7 @@ class TicketController extends Controller {
     }
 
     // retrieve ticket by ticket_no
+    // return: json with ticket information
     public function readByTicketNo($ticketNo) {
 
         // validation
@@ -88,6 +90,7 @@ class TicketController extends Controller {
     }
 
     // list all tickets
+    // return array of tickets and total count of tickets
     public function list() {
         $query = new Ticket();
 
@@ -141,7 +144,7 @@ class TicketController extends Controller {
 
         return response()->json([
             'items' => $result,
-            'count' => $outputCount,
+            'count' => $outputCount
         ]);
     }   
 

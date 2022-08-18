@@ -36,11 +36,11 @@ Route::prefix('ticket')->group(function () {
     Route::post('/', [TicketController::class, 'create'])->name('create_ticket');
     Route::get('/', [TicketController::class, 'list'])->name('list_ticket');
     Route::get('/{id}', [TicketController::class, 'read'])->name('read_ticket');
-    Route::get('/ticket_no/{ticketNo}', [TicketController::class, 'readByTicketNo'])->name('read_ticket_by_ticket_no');
+    Route::get('/ticketNo/{ticketNo}', [TicketController::class, 'readByTicketNo'])->name('read_ticket_by_ticket_no');
 });
 
 Route::prefix('draw')->group(function () {
-    Route::get('/draw', [DrawController::class, 'create'])->name('create_draw');
-    Route::get('/', [DrawController::class, 'list'])->name('read_draw');
-    Route::get('/listWithTicket', [DrawController::class, 'listWithTicket'])->name('list_with_ticket');
+    Route::get('/drawTicket', [DrawController::class, 'create'])->name('create_draw');
+    Route::get('/{id}', [DrawController::class, 'read'])->name('read_draw');
+    Route::get('/', [DrawController::class, 'list'])->name('list_draw');
 });

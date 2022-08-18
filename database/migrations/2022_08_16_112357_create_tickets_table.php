@@ -17,9 +17,9 @@ class CreateTicketsTable extends Migration
             $table->id();
             $table->string('ticket_no')->nullable();
             $table->boolean('is_drawn')->nullable();
-            $table->integer('draw_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('draw_id')->nullable();
             $table->boolean('is_win')->nullable();
-            $table->integer('user_id')->unsigned();
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
     }

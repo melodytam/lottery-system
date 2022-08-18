@@ -23,6 +23,8 @@ class UserController extends Controller {
         $this->request = $request;
     }
 
+    // create user
+    // return json with user information
     public function create() {
         if (!$this->request->has('username')) {
             return response()->json('Missing username', 400);
@@ -78,10 +80,12 @@ class UserController extends Controller {
 
     }
 
+    // update user
+    // return json with update information
     public function update($id) {
         // validation
-        $ticket = User::find($id);
-        if(empty($ticket)) {
+        $user = User::find($id);
+        if(empty($user)) {
             return response()->json([
                 'message' => 'The user does not exist'
             ], 400);
@@ -94,8 +98,12 @@ class UserController extends Controller {
             // update username 
             if($this->request->has('username'))
             {
+                $username = $this->request->input('username');
+                if (User::where('username', $username)->exists()) {
+                    return response()->json("$username already exists", 400);
+                }
                 $user->update([
-                    'username' => $this->request->input('username'),
+                    'username' => $username
                 ]);
             }
             // update password 
@@ -103,13 +111,17 @@ class UserController extends Controller {
             {
                 $password = Hash::make($this->request->input('password'));
                 $user->update([
-                    'password' => $password,
+                    'password' => $password
                 ]);
             }
             // update email 
             if($this->request->has('email'))
             {
                 $email = $this->request->input('email');
+
+                if (User::where('email', $email)->exists()) {
+                    return response()->json("$email already exists", 400);
+                }
                 $user->update([
                     'email' => $email,
                 ]);
@@ -117,6 +129,8 @@ class UserController extends Controller {
 
             // update completed
             DB::commit();
+
+            return response()->json($user);
 
         } catch(\Exception $e) {
           DB::rollback();
@@ -128,6 +142,7 @@ class UserController extends Controller {
     }
 
     // retrieve user
+    // return json with user information
     public function read($id) {
 
         // validation
@@ -142,6 +157,7 @@ class UserController extends Controller {
     }
 
     // retrieve username by username
+    // return json with user information
     public function readByUsername($username) {
 
         // validation
@@ -157,6 +173,7 @@ class UserController extends Controller {
     }
 
     // list users
+    // return array of users and count of users
     public function list() {
 
         $query = new User();

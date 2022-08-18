@@ -28,10 +28,9 @@ class DrawController extends Controller {
 
     // create a draw (draw ticket)
     // param: user_id
-    // return: the win ticket entry
+    // return: json with win ticket and draw information
     public function create() {
 
-        // DrawTicketJob::dispatch();
         // Get valid tickets (tickets not yet been drawn and created before this draw)
         $query = Ticket::where('is_drawn', false)->where('created_at', '<', Carbon::now());
         $validTicketIds = $query->pluck('id')->toArray();
@@ -90,7 +89,24 @@ class DrawController extends Controller {
         ]);
     }
 
+    // retrieve draw
+    // return: json with draw information
+    public function read($id) {
+
+        // validation
+        $draw = Draw::find($id);
+        if(empty($draw))
+        {
+          return response()->json([
+            'message' => 'The draw does not exist'
+          ], 400);
+        }
+        
+        return response()->json($draw);
+    }
+
     // list all draws
+    // return: json with array of draws and count of draws 
     public function list() {
         $query = new Draw();
 
@@ -99,50 +115,6 @@ class DrawController extends Controller {
             $query = $query->orderBy($this->request->input('order_by'), $this->request->input('order_direction'));
         } else {
             $query = $query->orderBy('id', 'asc');
-        }
-
-        // retrieve count from query
-        $outputCount = $query->count();
-
-        //if has paging parameter, do pagination
-        //if not, list all items
-        if ($this->request->has('page') && $this->request->has('items_per_page')){
-            // set pagination
-            $page = intval($this->request->input('page'));
-            $itemsPerPage = intval($this->request->input('items_per_page'));
-  
-            // retrieve items from query
-            $models = $query
-                    ->skip(($page - 1)*$itemsPerPage)
-                    ->take($itemsPerPage)
-                    ->get();
-        } else {
-            $models = $query->get();
-        }
-  
-        $result = $models->toArray();
-
-        return response()->json([
-            'items' => $result,
-            'count' => $outputCount,
-        ]);
-    }
-
-    // list all draws with tickets details
-    public function listWithTicket() {
-        $query = new Draw();
-
-        $query = $query->leftJoin('tickets', 'draws.id', '=', 'tickets.draw_id');
-        // order by particular column and direction
-        if($this->request->has('order_by') && $this->request->has('order_direction')) {
-            $query = $query->orderBy($this->request->input('order_by'), $this->request->input('order_direction'));
-        } else {
-            $query = $query->orderBy('draws.id', 'asc');
-        }
-
-        // filter draws.id (get all entries of particular draw id of the joined table )
-        if ($this->request->has('draw_id')) {
-            $query = $query->where('draws.id', $this->request->input('draw_id'));
         }
 
         // retrieve count from query
