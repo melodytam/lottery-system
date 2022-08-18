@@ -26,8 +26,10 @@ Route::get('/token', function () {
 
 Route::prefix('user')->group(function () {
     Route::post('/', [UserController::class, 'create'])->name('create_user');
-    // Route::get('/', [UserController::class, 'list'])->name('list_user');
-    // Route::get('/{id}', [UserController::class, 'read'])->name('read_user');
+    Route::get('/', [UserController::class, 'list'])->name('list_user');
+    Route::get('/{id}', [UserController::class, 'read'])->name('read_user');
+    Route::get('/username/{id}', [UserController::class, 'readByUsername'])->name('read_user_by_username');
+    Route::put('/{id}', [UserController::class, 'update'])->name('update_user');
 });
 
 Route::prefix('ticket')->group(function () {
@@ -38,5 +40,7 @@ Route::prefix('ticket')->group(function () {
 });
 
 Route::prefix('draw')->group(function () {
-    Route::get('/', [DrawController::class, 'create'])->name('create_draw');
+    Route::get('/draw', [DrawController::class, 'create'])->name('create_draw');
+    Route::get('/', [DrawController::class, 'list'])->name('read_draw');
+    Route::get('/listWithTicket', [DrawController::class, 'listWithTicket'])->name('list_with_ticket');
 });

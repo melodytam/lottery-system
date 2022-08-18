@@ -103,11 +103,20 @@ class TicketController extends Controller {
             $query = $query->where('is_drawn', $this->request->input('is_drawn'));
         }
   
+        // filter draw_id
+        if ($this->request->has('draw_id')) {
+            $query = $query->where('draw_id', $this->request->input('draw_id'));
+        }
+
         // filter is_win
         if ($this->request->has('is_win')) {
             $query = $query->where('is_win', $this->request->input('is_win'));
         }
 
+        // filter user_id
+        if ($this->request->has('user_id')) {
+            $query = $query->where('user_id', $this->request->input('user_id'));
+        }
         // retrieve count from query
         $outputCount = $query->count();
 
@@ -136,5 +145,5 @@ class TicketController extends Controller {
         ]);
     }   
 
-    
+
 }

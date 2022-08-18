@@ -126,4 +126,82 @@ class UserController extends Controller {
         }
 
     }
+
+    // retrieve user
+    public function read($id) {
+
+        // validation
+        $user = User::find($id);
+        if(empty($user))
+        {
+            return response()->json([
+                'message' => 'The user does not exist'
+            ], 400);
+        }
+        return response()->json($user);
+    }
+
+    // retrieve username by username
+    public function readByUsername($username) {
+
+        // validation
+        $user = User::where('username', $username)->first();
+        if(!$user)
+        {
+            return response()->json([
+                'message' => 'The user does not exist'
+            ], 400);
+        }
+        
+        return response()->json($user);
+    }
+
+    // list users
+    public function list() {
+
+        $query = new User();
+
+        // order by particular column and direction
+        if($this->request->has('order_by') && $this->request->has('order_direction')) {
+            $query = $query->orderBy($this->request->input('order_by'), $this->request->input('order_direction'));
+        } else {
+            $query = $query->orderBy('id', 'asc');
+        }
+
+        // filter username
+        if ($this->request->has('username')) {
+            $query = $query->where('username', $this->request->input('username'));
+        }
+  
+        // filter email
+        if ($this->request->has('email')) {
+            $query = $query->where('email', $this->request->input('email'));
+        }
+
+        // retrieve count from query
+        $outputCount = $query->count();
+
+        //if has paging parameter, do pagination
+        //if not, list all items
+        if ($this->request->has('page') && $this->request->has('items_per_page')){
+            // set pagination
+            $page = intval($this->request->input('page'));
+            $itemsPerPage = intval($this->request->input('items_per_page'));
+  
+            // retrieve items from query
+            $models = $query
+                    ->skip(($page - 1)*$itemsPerPage)
+                    ->take($itemsPerPage)
+                    ->get();
+        } else {
+            $models = $query->get();
+        }
+  
+        $result = $models->toArray();
+
+        return response()->json([
+            'items' => $result,
+            'count' => $outputCount
+        ]);
+    }   
 }
