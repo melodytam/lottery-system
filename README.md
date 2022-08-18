@@ -53,6 +53,10 @@ php artisan mockup:createUser
 php -S localhost:8000 -t public
 ```
 
+## APIs Documentation
+
+For APIs documentation, please refers to `lottery-api-doc.docx` in the repository.
+
 ## Limitations
 
 1. The draw of tickets periodically and continuously at every x minutes depends on the frontend api call. As this system is developed in laravel, it is hard to handle process that are needed to be called repeatedly and periodically. Scheduler in Laravel is needed to implement these repeated functions, which requires to run as a cron job. Due to cron job requires modifying the cron file in the local drive, it might not be a good solution for this system. Therefore, the ticket drawing event depends on the api request from the frontend. Frontend is required to call that api repeatedly with the given interval to start each draw.
